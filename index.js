@@ -4,8 +4,8 @@ const Mongoose = require("mongoose");
 const Boom = require("boom");
 const glob = require("glob");
 const path = require("path");
-// Mongoose.connect(process.env.MONGODB_URI, {
-Mongoose.connect('mongodb://localhost/kajuy',{
+Mongoose.connect(process.env.MONGODB_URI, {
+// Mongoose.connect('mongodb://localhost/kajuy',{
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
