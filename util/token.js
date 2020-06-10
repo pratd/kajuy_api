@@ -8,9 +8,9 @@ function createToken(user) {
   //!has admin set to true and if so, set
   //! scopes to admin
   if (user.role == "provider") {
-    scopes = "read: provider";
+    scopes = "provider";
   } else {
-    scopes = "read: buyer";
+    scopes = "buyer";
   }
   //sign the token
   return jwt.sign(
@@ -19,6 +19,7 @@ function createToken(user) {
       username: user.username,
       scope: scopes,
       user_email: user.email,
+      user_id:user.user_id
     },
     secret,
     { algorithm: "HS256", expiresIn: 86400 }

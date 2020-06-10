@@ -1,10 +1,12 @@
 const bcrypt = require("bcrypt");
 const Boom = require("boom");
 const User = require("../models/users");
+const Providers = require("../models/providers");
+const Buyer = require("../models/buyers");
 const createUserSchema = require("../schemas/createUser");
 const verifyUniqueUser = require("../util/userFunctions").verifyUniqueUser;
 const createToken = require("../util/token");
-
+const cookie_options = require("../util/cookies_options");
 async function hashPassword(password) {
     //generate a salt at level 10 strength
     const saltRounds = 10;
@@ -34,7 +36,7 @@ module.exports = {
             throw Boom.badRequest(err);
         }
         user.password = hash;
-        const savedUserr = await new Promise((resolve, reject) => {
+        const savedUser = await new Promise((resolve, reject) => {
             //assuming a new promise enable save
             user.save(function (err, user) {
             if (err) {
@@ -44,7 +46,46 @@ module.exports = {
             });
         });
         //if user is saved successfully, issue a JWT
-        return res.response({ id_token: createToken(savedUser) }).code(201);
+        // and add a new provider or buyer based on the role
+        if(user.role == "provider"){
+            let providers = new Providers();
+            providers.username = req.payload.username;
+            providers.email = req.payload.email;
+            providers.password = hash;
+            providers.user_id = savedUser._id;
+            providers.role = req.payload.role;
+            const savedProvider = await new Promise((resolve, reject) => {
+                //assuming a new promise enable save
+                providers.save(function (err, user) {
+                if (err) {
+                    throw Boom.badRequest(err);
+                }
+                resolve(providers);
+                });
+            });
+            // return res.response({text: 'Check Browser Cookie or Auth Header for your Token (JWT)'})
+            // .header("Authorization: provider", createToken(savedProvider))
+            // .state("token", createToken(savedProvider), cookie_options);
+            return res.response({ id_token: createToken(savedProvider) }).code(201);
+        }else{
+            let buyers = new Buyer();
+            buyers.username = req.payload.username;
+            buyers.email = req.payload.email;
+            buyers.password = hash;
+            buyers.user_id = savedUser._id;
+            buyers.role = req.payload.role;
+            const savedBuyer = await new Promise((resolve, reject) => {
+                //assuming a new promise enable save
+                buyers.save(function (err, user) {
+                if (err) {
+                    throw Boom.badRequest(err);
+                }
+                resolve(buyers);
+                });
+            });
+            return res.response({ id_token: createToken(savedBuyer) }).code(201);
+        }
+        //return res.response({ id_token: createToken(savedUser) }).code(201);
         },
         payload: {
         allow: [

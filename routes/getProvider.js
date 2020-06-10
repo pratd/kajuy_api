@@ -4,10 +4,6 @@ module.exports ={
     method: "GET",
     path: "/provider/{id}",
     config: {
-        auth: {
-            strategy: "jwtokenization",
-            scope:"read: provider"
-        },
         handler: async (req, res) => {
             const providerId = req.params.id;
             try {

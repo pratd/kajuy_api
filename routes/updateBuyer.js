@@ -1,6 +1,6 @@
 const Buyers = require("../models/buyers");
 const VerifyBuyerSchema = require("../schemas/verifyBuyer").verifyBuyerSchema;
-const upload = require('./uploadImages');
+const upload = require('../util/uploadImages');
 module.exports ={
     method: "PUT",
     path:'/buyer/update/{id}',
@@ -43,7 +43,7 @@ module.exports ={
         // The user must have a scope of `admin`
         auth: {
             strategy: 'jwtokenization',
-            scope: ['read: buyer']
+            scope: ['buyer']
         },
         payload:{
         output: 'stream',

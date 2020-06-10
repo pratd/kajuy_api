@@ -12,6 +12,7 @@ const verifyProviderSchema = Joi.object({
     "wallet":Joi.any().meta({swaggerType: 'file'}).description('file to upload').optional(),
     "paid":Joi.boolean().optional(),
     "extra":Joi.string().optional(),
+    "role":Joi.string().optional(),
 });
 module.exports ={
     verifyProviderSchema : verifyProviderSchema

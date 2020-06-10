@@ -1,7 +1,8 @@
 const Boom = require('boom');
 const User = require('../models/users');
 const bcrypt = require('bcrypt');
-
+const Provider = require('../models/providers');
+const Buyer = require('../models/buyers');
 async function verifyUniqueUser (req, res){
     //TODO finding the entry in database that matches
     //TODO either email or username
@@ -43,7 +44,24 @@ async function verifyCredentials(req, res ){
         if(!isValid){
             throw (Boom.badRequest('Incorrect password! '));
         }
-        return res.response(user);
+        //send back the provider or buyer item
+        if(user.role=="provider"){
+            let provider = await Provider.findOne({
+                $or:[
+                    { email: req.payload.email},
+                    { username: req.payload.username}
+                ]
+            });
+            return res.response(provider);
+        }else{
+            let buyer = await Buyer.findOne({
+                $or:[
+                    { email: req.payload.email},
+                    { username: req.payload.username}
+                ]
+            });
+            return res.response(buyer);
+        }
     }
     else{
         throw (Boom.badRequest('Incorrect username or email!'));

@@ -11,6 +11,7 @@ const verifyBuyerSchema = Joi.object({
     "address_code":Joi.string().optional(),
     "wallet":Joi.any().meta({swaggerType: 'file'}).description('file to upload').optional(),
     "paid":Joi.boolean().optional(),
+    "role":Joi.string().optional()
 });
 module.exports ={
     verifyBuyerSchema : verifyBuyerSchema

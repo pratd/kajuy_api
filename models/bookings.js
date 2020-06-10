@@ -11,6 +11,7 @@ const bookingsSchema = new Schema(
         buyer_id:{type: mongoose.Schema.Types.ObjectId, ref:"buyers"},
         confirmed:{type:Boolean},
         paid:{type:Boolean},
+        date:{type: Date, default: Date.now}
     },
     {
         timestamps: { createdAt: "created_at", updatedAt: "updated_at" },

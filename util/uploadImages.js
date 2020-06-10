@@ -9,7 +9,7 @@ aws.config.update({
 const bucketName = process.env.BUCKET;
 //initiating the S3 instance
 const s3 = new aws.S3({
-    parans: {Bucket: bucketName}
+    params: {Bucket: bucketName}
 });
 //option to limit the file size
 const options = {partSize: 1024*1024};
@@ -17,7 +17,12 @@ const options = {partSize: 1024*1024};
 //"Body" accepts the file
 async function uploadImages(file, req){
     const params = {Bucket: bucketName,
-        Key: req.auth.credentials.id.toString, Body:file
+        Key: function(req, file, cb) {
+            console.log(file);
+            const myFileName = "fwcsewkxglyx/public/" + req.auth.credentials.id.toString;
+            console.log(myFileName);
+            cb(null, myFileName);
+        }, Body:file,
     };
     let fileResp = null;
     await s3.upload(params, options).promise().then((res)=>{

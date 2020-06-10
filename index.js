@@ -37,14 +37,8 @@ const server = new Hapi.Server({
 
 //validation function for the token
 const validateFunc = async (decoded, request) => {
-    if (decoded && decoded.sub) {
-        return decoded.scope ? {
-            isValid: true,
-            credentials: {
-                scope: decoded.scope.split(' ')
-            }
-        }
-        : { isValid: true };
+    if (decoded) {
+        return { isValid: true };
     }
     return { isValid: false };
 };
@@ -54,10 +48,10 @@ const bootUpServer = async () => {
     await server.register(require("@hapi/inert"));
     await server.register([require("hapi-auth-jwt2")]);
 
-    server.auth.strategy("jwtokenization", 'jwt', {
-        key: secret,
+    server.auth.strategy("jwtokenization", "jwt", {
+        key: process.env.SECRET,
         verify: {
-            ignoreExpiration: true,
+            // ignoreExpiration: true,
             algorithms: ['HS256'] },
         validate: validateFunc,
     });

@@ -1,6 +1,6 @@
 const ProviderModel = require("../models/providers");
-const VerifyProviderSchema = require("../schemas/verifyProvider").verifyProviderSchema;
-const upload = require('./uploadImages');
+const verifyProviderSchema = require("../schemas/verifyProvider").verifyProviderSchema;
+const upload = require('../util/uploadImages');
 module.exports ={
     method: "PUT",
     path:'/provider/update/{id}',
@@ -18,7 +18,7 @@ module.exports ={
                     return responseFile;
                 }
             };
-
+           
             let filetoPush = await Promise.resolve(responseFile);
 
             if(filetoPush){
@@ -32,7 +32,7 @@ module.exports ={
                         req.payload.avatar=undefined;
                     }
                     //*final update after pushing the photo
-                    await ProviderModel.findByIdAndUpdate(req.params.id,req.payload,{new:true,omitUndefined:true});
+                    const result = await ProviderModel.findByIdAndUpdate(req.params.id,req.payload,{new:true,omitUndefined:true});
                     return res.response(result);
                 }catch (error){
                     return Boom.badRequest('Unexpected Input!');
@@ -43,7 +43,7 @@ module.exports ={
         // The user must have a scope of `admin`
         auth: {
             strategy: 'jwtokenization',
-            scope: ['read: provider']
+            scope: ['provider']
         },
         payload:{
         output: 'stream',

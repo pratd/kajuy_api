@@ -1,14 +1,14 @@
-const ServiceModel = require('../models/services');
-const serviceSchema = require('../schemas/verifyService').verifyServiceSchema;
+const BookingModel = require('../models/bookings');
+const BookingSchema = require('../schemas/verifyBooking').verifyBookingSchema;
 const Boom = require('boom');
 module.exports ={
     method: "PUT",
-    path:'/service/update/{id}',
+    path:'/booking/update/{id}',
     config:{
         handler: async(req, res)=>{
             try{
-                //*update the services DB
-                const result = await ServiceModel.findByIdAndUpdate(req.params.id,req.payload,{new:true,omitUndefined:true});
+                //*update the booking DB
+                const result = await BookingModel.findByIdAndUpdate(req.params.id,req.payload,{new:true,omitUndefined:true});
                 return res.response(result);
             }catch (error){
                 return Boom.badRequest('Unexpected Input!');
@@ -29,7 +29,7 @@ module.exports ={
             timeout: false,
         },
         validate:{
-            payload: serviceSchema,
+            payload: BookingSchema,
             failAction: (reques, resp, error)=>{
                 return error.isJoi ? resp.response(error.details[0]).takeover() :
                 resp.response(error).takeover();

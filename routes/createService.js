@@ -1,13 +1,13 @@
 const ServiceSchema = require("../models/services");
 const ProviderSchema = require("../models/providers");
-const verifyServiceSchema = require("../schemas/verifyService");
+const verifyServiceSchema = require("../schemas/verifyService").verifyServiceSchema;
 module.exports = {
     method: "POST",
     path: "/service/add",
     config: {
         auth: {
             strategy: "jwtokenization",
-            scope: ["read: provider"],
+            scope: ["provider"],
         },
         payload: {
         output: "stream",
@@ -31,7 +31,7 @@ module.exports = {
         services.service = data.service;
         services.provider_id = req.auth.credentials.id;
         services.extra = data.extra;
-        service.date = data.date;
+        services.date = data.date;
         //updating the services
         try {
         await services.save();
@@ -50,7 +50,6 @@ module.exports = {
         } catch(err) {
         return res.response("There was an error trying to create this service");
         }
-    }
     },
     validate: {
         payload: verifyServiceSchema,
@@ -58,5 +57,6 @@ module.exports = {
         failAction: (request, h, err) => {
             return err;
         },
+    },
     },
 };
